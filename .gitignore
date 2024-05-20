@@ -1,2 +1,7 @@
-src/vendor/
+/src/vendor
 .env
+/.idea
+/.vscode
+/node_modules
+composer.lock
+/src/node_modules
