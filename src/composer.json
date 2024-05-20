@@ -1,0 +1,21 @@
+{
+  "name": "local/consolidation-app",
+  "description": "Consolidation App",
+  "authors": [
+    {
+      "name": "Claudio Gomes",
+      "email": "claudio.sgomes@linx.com.br"
+    }
+  ],
+  "autoload": {
+    "files": [
+      "index.php"
+    ]
+  },
+  "require": {
+    "php": ">=7.4",
+    "aws/aws-sdk-php": "^3.283",
+    "firebase/php-jwt": "^6.10.0",
+    "ext-pdo": "*"
+  }
+}

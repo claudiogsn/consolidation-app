@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  web:
+    container_name: consolidation-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - UID=${UID:-1000}
+        - GID=${GID:-1000}
+    ports:
+      - "80:8080"
+    command:
+      - /bin/sh
+      - -c
+      - |
+        composer install
+        /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
+    volumes:
+      - ./src:/var/www/html
+      - ./assets/default.conf:/etc/nginx/conf.d/default.conf
+    environment:
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_DATABASE: ${DB_DATABASE}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_HOST_LOCAL: ${DB_HOST_LOCAL}
+      DB_PORT_LOCAL: ${DB_PORT_LOCAL}
+      DB_DATABASE_LOCAL: ${DB_DATABASE_LOCAL}
+      DB_USERNAME_LOCAL: ${DB_USERNAME_LOCAL}
+      DB_PASSWORD_LOCAL: ${DB_PASSWORD_LOCAL}
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8.0
+    container_name: consolidation-db
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: consolidation
+      MYSQL_USER: consolidation
+      MYSQL_PASSWORD: consolidation
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./assets/data.sql:/docker-entrypoint-initdb.d/data.sql
+      - ./assets/permissions.sql:/docker-entrypoint-initdb.d/permissions.sql
+
+
+volumes:
+  db_data:
