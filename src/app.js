@@ -12,6 +12,9 @@ const idEstabelecimento = document.getElementById('idEstabelecimento');
 const CodDocs = document.getElementById('CodDocs');
 const NumControles = document.getElementById('NumControles');
 
+const baseURL = `${window.location.protocol}//${window.location.host}`;
+
+
 function copyToClipboard(text) {
     navigator.clipboard.writeText(text).then(() => {
         alert(`Comando SQL copiado para o clipboard: ${text}`);
@@ -52,7 +55,7 @@ consultaForm.addEventListener('submit', async function(event) {
     loadingModal.classList.remove('hidden');
 
     try {
-        const response = await axios.get(`http://localhost/api/getDocs.php?estabelecimento=${estabelecimento}&dt_mov=${data}`);
+        const response = await axios.get(`${baseURL}/api/getDocs.php?estabelecimento=${estabelecimento}&dt_mov=${data}`);
         if (response.status === 200) {
             const responseDataDocs = response.data;
             console.log("Docs Message:", responseDataDocs.message);
@@ -62,35 +65,35 @@ consultaForm.addEventListener('submit', async function(event) {
             loadingTitle.textContent = responseDataDocs.message;
             loadingSubtitle.textContent = 'Processando Conta Detalhe...';
 
-            const processResponse = await axios.get(`http://localhost/api/process.php?table=detconta`);
+            const processResponse = await axios.get(`${baseURL}/api/process.php?table=detconta`);
             if (processResponse.status === 200) {
                 const responseDataDetConta = processResponse.data;
                 console.log("DetConta Message:", responseDataDetConta.message);
                 loadingTitle.textContent = responseDataDetConta.message;
                 loadingSubtitle.textContent = 'Processando Conta Pagamento...';
 
-                const processPagamentoResponse = await axios.get(`http://localhost/api/process.php?table=pagconta`);
+                const processPagamentoResponse = await axios.get(`${baseURL}/api/process.php?table=pagconta`);
                 if (processPagamentoResponse.status === 200) {
                     const responseDataPagConta = processPagamentoResponse.data;
                     console.log("PagConta Message:", responseDataPagConta.message);
                     loadingTitle.textContent = responseDataPagConta.message;
                     loadingSubtitle.textContent = 'Processando NFCe Itens...';
 
-                    const processItensResponse = await axios.get(`http://localhost/api/process.php?table=nfceitens`);
+                    const processItensResponse = await axios.get(`${baseURL}/api/process.php?table=nfceitens`);
                     if (processItensResponse.status === 200) {
                         const responseDataNfceItens = processItensResponse.data;
                         console.log("NfceItens Message:", responseDataNfceItens.message);
                         loadingTitle.textContent = responseDataNfceItens.message;
                         loadingSubtitle.textContent = 'Processando NFCe Pagmentos...';
 
-                        const processPagamentosResponse = await axios.get(`http://localhost/api/process.php?table=nfcepag`);
+                        const processPagamentosResponse = await axios.get(`${baseURL}/api/process.php?table=nfcepag`);
                         if (processPagamentosResponse.status === 200) {
                             const responseDataNfcePag = processPagamentosResponse.data;
                             console.log("NfcePag Message:", responseDataNfcePag.message);
                             loadingTitle.textContent = responseDataNfcePag.message;
                             loadingSubtitle.textContent = 'Processando Divergências...';
 
-                            const divergenciasResponse = await axios.get(`http://localhost/api/diference.php`);
+                            const divergenciasResponse = await axios.get(`${baseURL}/api/diference.php`);
                             if (divergenciasResponse.status === 200) {
                                 const { message, data } = divergenciasResponse.data;
                                 const cod_docs = divergenciasResponse.data.cod_docs;
